@@ -38,7 +38,7 @@ class componentName extends Component {
     return (
       <div>
         <h4>title: {this.state.title} </h4>
-        <h4>opening crawl: {this.state.opening_crawl} </h4>
+        <h4>opening crawl:<br /> {this.state.opening_crawl} </h4>
         <h4>director: {this.state.director}</h4>
       </div>
     )

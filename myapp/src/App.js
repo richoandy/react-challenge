@@ -37,7 +37,7 @@ class App extends Component {
               })
             } />
             <Route path="/login" component={Login} />
-            <Route path="/detail/:url" component={PeopleDetail} />
+            <Route path="/detail/:type/:url" component={PeopleDetail} />
             <Route path="*" component={NotFound} />
           </Switch>
         </div>   

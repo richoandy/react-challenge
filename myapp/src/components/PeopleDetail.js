@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import {Button,  Grid, Col, Row} from 'react-bootstrap'
 import FilmDetail from './FilmDetail'
+import Info from './Info'
 import {
   BrowserRouter as Router,
   Route,
@@ -17,20 +18,26 @@ class PeopleDetail extends Component {
       height: '',
       mass: '',
       gender: '',
+      model: '',
+      manufacturer: '',
+      length: '',
       films: [],
       filmTitles: []
     }
   }
 
-  fetchPeople () {
+  fetchPeople (type) {
     let self = this
-    axios.get(`https://swapi.co/api/people/${this.props.match.params.url}`)
+    axios.get(`https://swapi.co/api/${type}/${this.props.match.params.url}`)
     .then(function (response) {
       self.setState({
         name: response.data.name,
         height: response.data.height,
         mass: response.data.mass,
         gender: response.data.gender,
+        model: response.data.model,
+        manufacturer: response.data.manufacturer,
+        length: response.data.length,
         films: response.data.films
       })
       self.state.films.forEach(film => {
@@ -63,16 +70,17 @@ class PeopleDetail extends Component {
   }
 
   componentDidMount () {
-    this.fetchPeople()
+    this.fetchPeople(this.props.match.params.type)
     this.fetchFilms()
   }
 
   render () {
     let filmList = this.state.filmTitles.map(film => 
-      <Link to={`/detail/${this.props.match.params.url}/film/${film.url.split('/')[5]}`} key={film.title}>
+      <Link to={`/detail/${this.props.match.params.type}/${this.props.match.params.url}/film/${film.url.split('/')[5]}`} key={film.title}>
       <li film={film}>{film.title}</li>
       </Link>
     )
+    let info = (this.props.match.params.type === 'people') ? <Info type={this.props.match.params.type} height={this.state.height} mass={this.state.mass} gender={this.state.gender}/> : <Info type={this.props.match.params.type} model={this.state.model} manufacturer={this.state.manufacturer} length={this.state.length}/>
     return (
         <div className="container">
         <Link to="/">
@@ -81,10 +89,8 @@ class PeopleDetail extends Component {
           <Grid>
             <Row className="show-grid">
               <Col md={6}>
-                <h1>{this.state.name}</h1>
-                <div>height: {this.state.height} cm</div>
-                <div>mass: {this.state.mass} kg</div>
-                <div>gender: {this.state.gender} </div>
+              <h1>{this.state.name}</h1>
+                {info}
                 <h4>list of films</h4>
                 <ul>
                   {filmList}
@@ -93,7 +99,7 @@ class PeopleDetail extends Component {
               <Col md={6}>
                 Film Detail
                 <Switch>
-                  <Route path={`/detail/${this.props.match.params.url}/film/:filmId`} component={FilmDetail}/>
+                  <Route path={`/detail/${this.props.match.params.type}/${this.props.match.params.url}/film/:filmId`} component={FilmDetail}/>
                 </Switch>
               </Col>
             </Row>
