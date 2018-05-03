@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import {Grid, Col, Row, FormGroup, FormControl, Button} from 'react-bootstrap'
-import {BrowserRouter as Router, withRouter, Redirect} from 'react-router-dom'
+import {Grid, Col, Row, FormGroup, FormControl} from 'react-bootstrap'
 
 class Login extends Component {
     constructor(props) {

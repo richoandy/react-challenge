@@ -4,7 +4,6 @@ import {Button,  Grid, Col, Row} from 'react-bootstrap'
 import FilmDetail from './FilmDetail'
 import Info from './Info'
 import {
-  BrowserRouter as Router,
   Route,
   Link,
   Switch
@@ -80,6 +79,7 @@ class PeopleDetail extends Component {
       <li film={film}>{film.title}</li>
       </Link>
     )
+    
     let info = (this.props.match.params.type === 'people') ? <Info type={this.props.match.params.type} height={this.state.height} mass={this.state.mass} gender={this.state.gender}/> : <Info type={this.props.match.params.type} model={this.state.model} manufacturer={this.state.manufacturer} length={this.state.length}/>
     return (
         <div className="container">

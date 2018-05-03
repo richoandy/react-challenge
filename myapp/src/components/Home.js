@@ -3,8 +3,7 @@ import axios from 'axios'
 import { Button, Label, Grid, Col, Row } from 'react-bootstrap';
 // import PeopleDetail from './PeopleDetail'
 import Highlight from './Highlight'
-import { Link, withRouter, BrowserRouter as Router } from "react-router-dom";
-import store from '../stores'
+import { Link } from "react-router-dom";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {getAllPeople, clearPeople} from '../stores/people/action'
