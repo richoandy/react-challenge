@@ -73,6 +73,12 @@ class Home extends Component {
     let highlight = this.props.starships.map(ship =>
       <Highlight ship={ship} key={ship.name} />
     )
+
+    let buttons = []
+    
+    for (let i = 1; i <= 7; i++) {
+      buttons.push(<Button onClick={ () => this.fetchStarWarsChars(i) }>{i}</Button>)
+    }
     
     return (
       <div className="margin">
@@ -87,11 +93,8 @@ class Home extends Component {
               <h2>Characters</h2>
               {people}
               <br />
-              <Button onClick={ () => this.fetchStarWarsChars(1) }>1</Button>
-              <Button onClick={ () => this.fetchStarWarsChars(2) }>2</Button>
-              <Button onClick={ () => this.fetchStarWarsChars(3) }>3</Button>
-              <Button onClick={ () => this.fetchStarWarsChars(4) }>4</Button>
-              <Button onClick={ () => this.fetchStarWarsChars(5) }>5</Button>
+              
+              {buttons}
             </Col>
           </Row>
         </Grid>
