@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import axios from 'axios'
-import { Button, Label, Grid, Col, Row } from 'react-bootstrap';
-// import PeopleDetail from './PeopleDetail'
+import { Button, Grid, Col, Row, Alert, strong } from 'react-bootstrap';
 import Highlight from './Highlight'
-import { Link } from "react-router-dom";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {getAllPeople, clearPeople} from '../stores/people/action'
 import {getAllStarships, clearStarships} from '../stores/starships/action'
+import NewPeopleForm from './NewPeopleForm'
+import CharContainer from './CharContainer'
+import './loader.css'
 
 class Home extends Component {
   constructor(props) {
@@ -24,34 +24,12 @@ class Home extends Component {
 
   fetchStarWarsStarShips () {
     this.props.clearStarships()
-    let self = this
-    for ( let i = 1; i <= 10; i++) {
-      const endPoint = `https://swapi.co/api/starships/${i}`
-      axios.get(endPoint)
-        .then(function (response) {
-          self.props.getAllStarships(response.data)
-        })
-        .catch(function (err) {
-          console.log(err)
-        }) 
-    }
+    this.props.getAllStarships()
   }
 
   fetchStarWarsChars (num) {
     this.props.clearPeople()
-    let self = this
-    let start = num * 5 - 4
-    let end = num * 5
-    for ( let i = start; i <= end; i++) {
-      const endPoint = `https://swapi.co/api/people/${i}`
-      axios.get(endPoint)
-        .then(function (response) {
-          self.props.getAllPeople(response.data)
-        })
-        .catch(function (err) {
-          console.log(err)
-        }) 
-    }
+    this.props.getAllPeople(num)
   }
 
   componentDidMount () {
@@ -61,23 +39,29 @@ class Home extends Component {
   }
 
   render () {
-    let people = this.props.characters.map(c =>
-      <div key={c.name}>
-        <h2><Label>{c.name}</Label></h2>
-        <Link to={`/detail/people/${c.url.split('/')[5]}`}>
-        <Button bsStyle="primary">Detail</Button>
-        </Link>
-      </div>
-    )
+    let people = null
+    let highlight = null
+    
+    if (this.props.charError) {
+      people = <Alert bsStyle="danger">Something went wrong : <strong>{this.props.charErrorMsg}</strong></Alert>
+    } else {
+      people = this.props.characters.map(c =>
+        <CharContainer key={c.name} c={c} />
+      )
+    }
 
-    let highlight = this.props.starships.map(ship =>
-      <Highlight ship={ship} key={ship.name} />
-    )
+    if (this.props.shipError) {
+      highlight = <Alert bsStyle="danger">Something went wrong : <strong>{this.props.shipErrorMsg}</strong></Alert>
+    } else {
+      highlight = this.props.starships.map(ship =>
+        <Highlight ship={ship} key={ship.name} />
+      )
+    }
 
     let buttons = []
     
     for (let i = 1; i <= 7; i++) {
-      buttons.push(<Button onClick={ () => this.fetchStarWarsChars(i) }>{i}</Button>)
+      buttons.push(<Button onClick={ () => this.fetchStarWarsChars(i) } key={i}>{i}</Button>)
     }
     
     return (
@@ -86,15 +70,20 @@ class Home extends Component {
           <Button bsStyle="warning" onClick={this.logout.bind(this)} style={{margin: '10px'}}>logout</Button>
           <Row className="show-grid">
             <Col md={9}>
-              <h1>Starship highlight</h1>
-              {highlight}
+              <h1 className="text-pop-up-right">Starship highlight</h1>
+              {
+                this.props.shipLoading ? <div className="loader"></div> : highlight
+              }  
             </Col>
             <Col md={3}>
-              <h2>Characters</h2>
-              {people}
+              <h2 className="text-pop-up-left">Characters</h2>
+              {
+                this.props.charLoading ? <div className="loader"></div> : people
+              }  
               <br />
-              
               {buttons}
+              <br />
+              <NewPeopleForm />
             </Col>
           </Row>
         </Grid>
@@ -104,8 +93,15 @@ class Home extends Component {
 } 
 
 const mapStateToProps = (state) => ({
-    characters: state.people,
-    starships: state.starships
+    characters: state.people.data,
+    charLoading: state.people.loading,
+    charError: state.people.error.status,
+    charErrorMsg: state.people.error.message,
+
+    starships: state.starships.data,
+    shipLoading: state.starships.loading,
+    shipError: state.starships.error.status,
+    shipErrorMsg: state.starships.error.message
   })
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

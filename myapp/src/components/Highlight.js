@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {Jumbotron, Button} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 class Highlight extends Component {
   render () {
@@ -14,11 +15,15 @@ class Highlight extends Component {
           <Link to={`/detail/starships/${this.props.ship.url.split('/')[5]}`}>
             <Button bsStyle="primary">Detail</Button>
           </Link>
-          
         </Jumbotron>
       </div>
     )
   }
 }
 
-export default Highlight
+const mapStateToProps = (state) => ({
+  error: state.starships.error
+})
+
+export default connect(mapStateToProps, null) (Highlight)
+

@@ -97,7 +97,7 @@ class PeopleDetail extends Component {
                 </ul>
               </Col>
               <Col md={6}>
-                Film Detail
+                Film Detail   
                 <Switch>
                   <Route path={`/detail/${this.props.match.params.type}/${this.props.match.params.url}/film/:filmId`} component={FilmDetail}/>
                 </Switch>
