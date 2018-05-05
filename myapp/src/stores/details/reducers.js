@@ -1,7 +1,9 @@
 import {
   GET_DETAIL_LOADING,
   GET_DETAIL_ERROR,
-  GET_DETAIL_SUCCESS} from './action.types'
+  GET_DETAIL_SUCCESS,
+  FETCH_FILM_TITLE,
+  CLEAR_FILM_TITLE} from './action.types'
 
 const initialState = {
   loading: false,
@@ -9,11 +11,22 @@ const initialState = {
     status: false,
     message: ''
   },
-  data: []
+  data: [],
+  filmTitles: []
 }
 
 const reducers = (state = {...initialState}, action) => {
   switch (action.type) {
+    case FETCH_FILM_TITLE:
+      return {
+        ...state,
+        filmTitles: [...state.filmTitles, action.payload]
+      }
+    case CLEAR_FILM_TITLE:
+      return {
+        ...state,
+        filmTitles: []
+      }
     case GET_DETAIL_LOADING:
     return {
       ...state,

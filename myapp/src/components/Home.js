@@ -7,6 +7,7 @@ import {getAllPeople, clearPeople} from '../stores/people/action'
 import {getAllStarships, clearStarships} from '../stores/starships/action'
 import NewPeopleForm from './NewPeopleForm'
 import CharContainer from './CharContainer'
+import Favorite from './favorite'
 import './loader.css'
 
 class Home extends Component {
@@ -84,6 +85,9 @@ class Home extends Component {
               {buttons}
               <br />
               <NewPeopleForm />
+              <br />
+              <br />
+              <Favorite />
             </Col>
           </Row>
         </Grid>

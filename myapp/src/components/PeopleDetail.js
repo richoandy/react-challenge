@@ -8,6 +8,11 @@ import {
   Link,
   Switch
 } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { getFilm } from '../stores/filmDetail/action'
+import { getDetail } from '../stores/details/action'
+import { addFavorite } from '../stores/favorites/action'
 
 class PeopleDetail extends Component {
   constructor(props) {
@@ -26,26 +31,7 @@ class PeopleDetail extends Component {
   }
 
   fetchPeople (type) {
-    let self = this
-    axios.get(`https://swapi.co/api/${type}/${this.props.match.params.url}`)
-    .then(function (response) {
-      self.setState({
-        name: response.data.name,
-        height: response.data.height,
-        mass: response.data.mass,
-        gender: response.data.gender,
-        model: response.data.model,
-        manufacturer: response.data.manufacturer,
-        length: response.data.length,
-        films: response.data.films
-      })
-      self.state.films.forEach(film => {
-        self.fetchFilms(film)
-      })
-    })  
-    .catch(function (err) {
-      console.log(err)
-    })
+    this.props.getDetail(type, this.props.match.params.url)
   }
 
   fetchFilms (url) {
@@ -69,18 +55,30 @@ class PeopleDetail extends Component {
   }
 
   componentDidMount () {
+    console.log('component did mount')
     this.fetchPeople(this.props.match.params.type)
     this.fetchFilms()
   }
 
+  changeFilm = (id) => {
+    this.props.getFilm(id)
+  }
+
+  addFavorite = (name) => {
+    if (this.props.favorite.indexOf(name) === -1) {
+      this.props.addFavorite(name)
+    }
+  }
+
   render () {
-    let filmList = this.state.filmTitles.map(film => 
-      <Link to={`/detail/${this.props.match.params.type}/${this.props.match.params.url}/film/${film.url.split('/')[5]}`} key={film.title}>
+    let filmList = this.props.filmTitles.map(film => 
+      <Link onClick={() => this.changeFilm(film.url.split('/')[5])} to={`/detail/${this.props.match.params.type}/${this.props.match.params.url}/film/${film.url.split('/')[5]}`} key={film.title}>
       <li film={film}>{film.title}</li>
       </Link>
     )
     
-    let info = (this.props.match.params.type === 'people') ? <Info type={this.props.match.params.type} height={this.state.height} mass={this.state.mass} gender={this.state.gender}/> : <Info type={this.props.match.params.type} model={this.state.model} manufacturer={this.state.manufacturer} length={this.state.length}/>
+    let info = (this.props.match.params.type === 'people') ? <Info type={this.props.match.params.type} height={this.props.detail.height} mass={this.props.detail.mass} gender={this.props.detail.gender}/> : <Info type={this.props.match.params.type} model={this.props.detail.model} manufacturer={this.props.detail.manufacturer} length={this.props.detail.length}/>
+
     return (
         <div className="container">
         <Link to="/">
@@ -89,7 +87,9 @@ class PeopleDetail extends Component {
           <Grid>
             <Row className="show-grid">
               <Col md={6}>
-              <h1>{this.state.name}</h1>
+
+              {(this.props.match.params.type === 'people') ? <a onClick={() => this.addFavorite(this.props.detail.name)} title="Love it" className="btn" data-count="0"><span>&#x2764;</span></a> : <div></div> }
+              <h1>{this.props.detail.name}</h1>
                 {info}
                 <h4>list of films</h4>
                 <ul>
@@ -97,7 +97,7 @@ class PeopleDetail extends Component {
                 </ul>
               </Col>
               <Col md={6}>
-                Film Detail   
+                Film Detail 
                 <Switch>
                   <Route path={`/detail/${this.props.match.params.type}/${this.props.match.params.url}/film/:filmId`} component={FilmDetail}/>
                 </Switch>
@@ -109,4 +109,16 @@ class PeopleDetail extends Component {
   }
 }
 
-export default PeopleDetail
+const mapStateToProps = (state) => ({
+  detail: state.detail.data,
+  filmTitles: state.detail.filmTitles,
+  favorite: state.favorite
+})
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getFilm,
+  getDetail,
+  addFavorite
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps) (PeopleDetail)

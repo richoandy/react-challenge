@@ -22,6 +22,12 @@ class newPeopleForm extends Component {
     })
   }
 
+  setGender = (e) => {
+    this.setState({
+        gender: e.target.value
+    })
+  }
+
   addNewPeople = (e) => {
     e.preventDefault()
     const newPeople = this.state
@@ -40,14 +46,15 @@ class newPeopleForm extends Component {
                 <FormControl type="text" placeholder="new name" name="name" onChange={this.handleChange} />
               </FormGroup>
               <FormGroup bsSize="large">
-                <FormControl type="text" placeholder="new height" name="height" onChange={this.handleChange} />
+                <FormControl type="number" placeholder="new height" name="height" onChange={this.handleChange} />
               </FormGroup>
               <FormGroup bsSize="large">
-                <FormControl type="text" placeholder="new mass" name="mass" onChange={this.handleChange} />
+                <FormControl type="number" placeholder="new mass" name="mass" onChange={this.handleChange} />
               </FormGroup>
-              <FormGroup bsSize="large">
-                <FormControl type="text" placeholder="new gender" name="gender" onChange={this.handleChange} />
-              </FormGroup>
+              <div onChange={this.setGender}>
+                <input type="radio" value="Male" name="gender"/> Male
+                <input type="radio" value="Female" name="gender"/> Female
+              </div>
               <input type="submit" value="Submit" />
             </form>
             </Col>

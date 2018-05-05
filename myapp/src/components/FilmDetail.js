@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { getFilm } from '../stores/filmDetail/action'
 
-class componentName extends Component {
+class FilmDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -11,38 +13,47 @@ class componentName extends Component {
     }
   }
 
-  fetchFilmDetail (id) {
-    let self = this
-    axios.get(`https://swapi.co/api/films/${id}`)
-      .then(function (response) {
-        console.log(response)
-        self.setState({
-          title: response.data.title,
-          opening_crawl: response.data.opening_crawl,
-          director: response.data.director
-        })
-      })
-      .catch(function (err) {
-        console.log(err)
-      })
-  }
+  // fetchFilmDetail (id) {
+  //   // let self = this
+  //   // axios.get(`https://swapi.co/api/films/${id}`)
+  //   //   .then(function (response) {
+  //   //     console.log(response)
+  //   //     self.setState({
+  //   //       title: response.data.title,
+  //   //       opening_crawl: response.data.opening_crawl,
+  //   //       director: response.data.director
+  //   //     })
+  //   //   })
+  //   //   .catch(function (err) {
+  //   //     console.log(err)
+  //   //   })
+  //   this.props.getFilm(id)
+  // }
 
-  componentDidMount () {
-    this.fetchFilmDetail(this.props.match.params.filmId)
-  }
-  componentWillReceiveProps(nextProps) {
-    this.fetchFilmDetail(nextProps.match.params.filmId)
-  }
+  // componentDidMount () {
+  //   this.fetchFilmDetail(this.props.match.params.filmId)
+  // }
+  // componentWillReceiveProps(nextProps) {
+  //   this.fetchFilmDetail(nextProps.match.params.filmId)
+  // }
 
   render () {
     return (
       <div>
-        <h4>title: {this.state.title} </h4>
-        <h4>opening crawl:<br /> {this.state.opening_crawl} </h4>
-        <h4>director: {this.state.director}</h4>
+        <h4>title: {this.props.film.title} </h4>
+        <h4>opening crawl:<br /> {this.props.film.opening_crawl} </h4>
+        <h4>director: {this.props.film.director}</h4>
       </div>
     )
   }
 }
 
-export default componentName
+const mapStateToProps = (state) => ({
+  film: state.film.data
+})
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getFilm
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps) (FilmDetail)
